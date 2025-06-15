@@ -19,10 +19,6 @@ const GameBoard = (function () {
   return { getBoard, markCell, xValue, oValue };
 })();
 
-const Player = function (tokenCharacter = "*", name = "Player") {
-  return { name, token: tokenCharacter };
-};
-
 const GameController = (function () {
   const player1 = Player("X", "Player 1");
   const player2 = Player("O", "Player 2");
@@ -33,16 +29,16 @@ const GameController = (function () {
     if (GameBoard.markCell(index, activePlayer)) {
       if (playerWins(player1)) {
         console.log(`Player 1 wins!`);
-        return;
+        return 1;
       }
       if (playerWins(player2)) {
         console.log(`Player 2 wins!`);
-        return;
+        return 1;
       }
 
       switchPlayer();
 
-      return 1;
+      return 0;
     } else {
       return 0;
     }
@@ -86,3 +82,7 @@ const GameController = (function () {
 
   return { playRound };
 })();
+
+const Player = function (tokenCharacter = "*", name = "Player") {
+  return { name, token: tokenCharacter };
+};

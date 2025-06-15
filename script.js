@@ -15,6 +15,7 @@ const GameBoard = (function () {
   const getBoard = () => grid;
   const xValue = () => X;
   const oValue = () => O;
+  const emptyValue = () => EMPTY;
 
   return { getBoard, markCell, xValue, oValue };
 })();
@@ -41,7 +42,6 @@ const GameController = (function () {
       }
 
       switchPlayer();
-
       return 0;
     } else {
       return 0;
@@ -87,4 +87,4 @@ const GameController = (function () {
   return { playRound };
 })();
 
-
+/*TIE TO BE HANDLED*/

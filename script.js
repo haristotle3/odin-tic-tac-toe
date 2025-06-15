@@ -14,4 +14,6 @@ const GameBoard = (function () {
   return { getBoard, markCell };
 })();
 
-
+const Player = function (tokenCharacter = "*", name = "Player") {
+  return { name, token: tokenCharacter };
+};

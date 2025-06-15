@@ -17,7 +17,7 @@ const GameBoard = (function () {
   const oValue = () => O;
   const emptyValue = () => EMPTY;
 
-  return { getBoard, markCell, xValue, oValue };
+  return { getBoard, markCell, xValue, oValue, emptyValue };
 })();
 
 const Player = function (tokenCharacter = "*", name = "Player") {
@@ -27,7 +27,9 @@ const Player = function (tokenCharacter = "*", name = "Player") {
 const GameController = (function () {
   const player1 = Player("X", "Player 1");
   const player2 = Player("O", "Player 2");
+  const MAX_TURNS = 8;
 
+  let turnNumber = 0;
   let activePlayer = player1;
 
   const playRound = (index) => {
@@ -40,13 +42,21 @@ const GameController = (function () {
         console.log(`Player 2 wins!`);
         return 1;
       }
+      if (isTie()) {
+        console.log(`Tie`);
+        return 1;
+      }
 
       switchPlayer();
+      incTurn();
       return 0;
     } else {
       return 0;
     }
   };
+
+  const incTurn = () => turnNumber++;
+  const getTurn = () => turnNumber;
 
   const playerWins = (player) => {
     const marker =
@@ -80,6 +90,11 @@ const GameController = (function () {
     return false;
   };
 
+  const isTie = () => {
+    if (getTurn() === MAX_TURNS) return true;
+    return false;
+  };
+
   const switchPlayer = () => {
     activePlayer = activePlayer.token === player1.token ? player2 : player1;
   };
@@ -87,4 +102,3 @@ const GameController = (function () {
   return { playRound };
 })();
 
-/*TIE TO BE HANDLED*/

@@ -13,8 +13,10 @@ const GameBoard = (function () {
   };
 
   const getBoard = () => grid;
+  const xValue = () => X;
+  const oValue = () => O;
 
-  return { getBoard, markCell };
+  return { getBoard, markCell, xValue, oValue };
 })();
 
 const Player = function (tokenCharacter = "*", name = "Player") {
@@ -29,11 +31,53 @@ const GameController = (function () {
 
   const playRound = (index) => {
     if (GameBoard.markCell(index, activePlayer)) {
+      if (playerWins(player1)) {
+        console.log(`Player 1 wins!`);
+        return;
+      }
+      if (playerWins(player2)) {
+        console.log(`Player 2 wins!`);
+        return;
+      }
+
       switchPlayer();
+
       return 1;
     } else {
       return 0;
     }
+  };
+
+  const playerWins = (player) => {
+    const marker =
+      player.token === "X" ? GameBoard.xValue() : GameBoard.oValue();
+
+    const board = GameBoard.getBoard();
+    const winLines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+
+    for (let line of winLines) {
+      let win = true;
+
+      for (let cellIndex of line) {
+        if (board[cellIndex] != marker) {
+          win = false;
+          break;
+        }
+      }
+
+      if (win) return true;
+    }
+
+    return false;
   };
 
   const switchPlayer = () => {

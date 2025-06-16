@@ -157,10 +157,35 @@ const displayController = (function () {
     dialog.close();
   });
 
-  cellContainer.addEventListener("click", (e) => {
+  cellContainer.addEventListener("click", function handleGridClicks(e) {
     const cellNumber = e.target.id;
     const cell = document.getElementById(cellNumber);
-    if (GameController.playRound(Number(cellNumber)) == -1) return;
-    cell.textContent = GameController.getActivePlayerToken();
+    const token = GameController.getActivePlayerToken();
+
+    const rv = GameController.playRound(Number(cellNumber));
+    const resultHeading = document.querySelector(".results h1");
+
+    switch (rv) {
+      case -1:
+        return;
+      case 200:
+        cell.textContent = token;
+        break;
+      case 1:
+        cell.textContent = token;
+        resultHeading.textContent = "🎉 PLAYER 1 WINS! 🎉";
+        cellContainer.removeEventListener("click", handleGridClicks);
+        break;
+      case 2:
+        cell.textContent = token;
+        resultHeading.textContent = "🎉 PLAYER 2 WINS! 🎉";
+        cellContainer.removeEventListener("click", handleGridClicks);
+        break;
+      case 0:
+        cell.textContent = token;
+        resultHeading.textContent = "🏳️ TIE! 🏳️";
+        cellContainer.removeEventListener("click");
+        break;
+    }
   });
 })();

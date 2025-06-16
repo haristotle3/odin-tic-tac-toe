@@ -72,17 +72,18 @@ main .player-card button:hover {
 
 main .cells-container {
   display: grid;
-  gap: 8px;
+  gap: 3px;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-
+  background-color: black; 
   height: 540px;
   width: 540px;
 }
 
 main .cells-container button {
   background-color: white;
-  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0px;
   font-size: 120px;
 }
 

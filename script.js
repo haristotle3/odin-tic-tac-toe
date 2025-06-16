@@ -227,7 +227,7 @@ const displayController = (function () {
         break;
       case 1:
         cell.textContent = token;
-        // mistake here
+  
         resultHeading.textContent = `🎉 ${
           GameController.getPlayer(1).name
         } WINS! 🎉`;
@@ -236,7 +236,7 @@ const displayController = (function () {
         break;
       case 2:
         cell.textContent = token;
-        // mistake here
+        
         resultHeading.textContent = `🎉 ${
           GameController.getPlayer(2).name
         } WINS! 🎉`;

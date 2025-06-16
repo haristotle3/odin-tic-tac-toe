@@ -24,6 +24,7 @@ const Player = function (tokenCharacter = "*", name = "Player") {
   const rename = function (newName) {
     this.name = newName;
   };
+
   return { name, token: tokenCharacter, rename };
 };
 
@@ -39,17 +40,17 @@ const GameController = (function () {
   const playRound = (index) => {
     if (GameBoard.markCell(index, activePlayer)) {
       if (playerWins(player1)) {
-        console.log(`Player 1 wins!`);
+        // player1 wins
         setResult(1);
         return 1;
       }
       if (playerWins(player2)) {
-        console.log(`Player 2 wins!`);
+        // player2 wins
         setResult(2);
         return 2;
       }
       if (isTie()) {
-        console.log(`Tie`);
+        // tie
         setResult(0);
         return 0;
       }
@@ -57,8 +58,7 @@ const GameController = (function () {
       switchPlayer();
       incTurn();
       return 200;
-    }
-    return -1;
+    } else return -1;
   };
 
   const incTurn = () => turnNumber++;
@@ -151,10 +151,17 @@ const displayController = (function () {
 
   dialogFormSubmit.addEventListener("click", () => {
     const newName = document.querySelector("dialog form label input").value;
-    const playerNumber = document.querySelector("dialog form > input").value;
-    GameController.getPlayer(playerNumber).rename(newName);
+    const playerNumber = Number(
+      document.querySelector("dialog form > input").value
+    );
 
-    if (playerNumber === "1")
+    GameController.getPlayer(playerNumber).rename(newName);
+    console.log(
+      GameController.getPlayer(1).name,
+      GameController.getPlayer(2).name
+    );
+
+    if (playerNumber === 1)
       playerOneHeading.textContent =
         GameController.getPlayer(playerNumber).name;
     else
@@ -190,12 +197,17 @@ const displayController = (function () {
     gameEnabledStyling();
 
     cellContainer.addEventListener("click", function handleGridClicks(e) {
+      if (e.target.id === "grid-gap") return; // there are gaps in the grid cell.
       const cellNumber = e.target.id;
       const cell = document.getElementById(cellNumber);
       const token = GameController.getActivePlayerToken();
 
       const rv = GameController.playRound(Number(cellNumber));
       const resultHeading = document.querySelector(".results h1");
+      console.log(
+        GameController.getPlayer(1).name,
+        GameController.getPlayer(2).name
+      );
 
       switch (rv) {
         case -1:
@@ -205,7 +217,7 @@ const displayController = (function () {
           break;
         case 1:
           cell.textContent = token;
-
+          // mistake here
           resultHeading.textContent = `🎉 ${
             GameController.getPlayer(1).name
           } WINS! 🎉`;
@@ -214,9 +226,9 @@ const displayController = (function () {
           break;
         case 2:
           cell.textContent = token;
-
+          // mistake here
           resultHeading.textContent = `🎉 ${
-            GameController.getPlayer(1).name
+            GameController.getPlayer(2).name
           } WINS! 🎉`;
           cellContainer.removeEventListener("click", handleGridClicks);
           gameDisableStyling();
@@ -224,7 +236,7 @@ const displayController = (function () {
         case 0:
           cell.textContent = token;
           resultHeading.textContent = "🏳️ TIE! 🏳️";
-          cellContainer.removeEventListener("click");
+          cellContainer.removeEventListener("click", handleGridClicks);
           gameDisableStyling();
           break;
       }

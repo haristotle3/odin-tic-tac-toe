@@ -127,6 +127,7 @@ const GameController = (function () {
 })();
 
 const displayController = (function () {
+  let isGameActive = false;
   const cellContainer = document.querySelector(".cells-container");
 
   const startBtn = document.querySelector("#start");
@@ -144,6 +145,12 @@ const displayController = (function () {
 
   const playerOneHeading = document.querySelector(".player-card.player-1 h4");
   const playerTwoHeading = document.querySelector(".player-card.player-2 h4");
+
+  const player1Card = document.querySelector(".player-1");
+  const player2Card = document.querySelector(".player-2");
+
+  player1Card.style.opacity = "0.2";
+  player2Card.style.opacity = "0.2";
 
   playerOneHeading.textContent = GameController.getPlayer(1).name;
   playerTwoHeading.textContent = GameController.getPlayer(2).name;
@@ -184,11 +191,14 @@ const displayController = (function () {
 
   startBtn.addEventListener("click", () => {
     if (GameController.getResult() != -1) return;
+    isGameActive = true;
     gameEnabledStyling();
+    switchTurnsDisplay();
     cellContainer.addEventListener("click", handleGridClicks);
   });
 
   restartBtn.addEventListener("click", () => {
+    isGameActive = false;
     GameController.initGame();
     gameDisableStyling();
     const resultHeading = document.querySelector(".results h1");
@@ -206,6 +216,7 @@ const displayController = (function () {
     const token = GameController.getActivePlayerToken();
 
     const rv = GameController.playRound(Number(cellNumber));
+    switchTurnsDisplay();
     const resultHeading = document.querySelector(".results h1");
 
     switch (rv) {
@@ -221,7 +232,7 @@ const displayController = (function () {
           GameController.getPlayer(1).name
         } WINS! 🎉`;
         cellContainer.removeEventListener("click", handleGridClicks);
-        gameDisableStyling();
+        gameFinishedStyling();
         break;
       case 2:
         cell.textContent = token;
@@ -230,14 +241,25 @@ const displayController = (function () {
           GameController.getPlayer(2).name
         } WINS! 🎉`;
         cellContainer.removeEventListener("click", handleGridClicks);
-        gameDisableStyling();
+        gameFinishedStyling();
         break;
       case 0:
         cell.textContent = token;
         resultHeading.textContent = "🏳️ TIE! 🏳️";
         cellContainer.removeEventListener("click", handleGridClicks);
-        gameDisableStyling();
+        gameFinishedStyling();
         break;
+    }
+  };
+
+  const switchTurnsDisplay = () => {
+    if (!isGameActive) return;
+    if (GameController.getActivePlayerToken() === "X") {
+      player1Card.style.opacity = "1";
+      player2Card.style.opacity = "0.2";
+    } else {
+      player1Card.style.opacity = "0.2";
+      player2Card.style.opacity = "1";
     }
   };
 
@@ -248,7 +270,15 @@ const displayController = (function () {
 
   const gameDisableStyling = function () {
     const cellsContainer = document.querySelector("main .cells-container");
-    cellsContainer.style.backgroundColor = "rgba(0,0,0,0.1)";
+    cellsContainer.style.backgroundColor = "rgba(0,0,0,0.2)";
+
+    player1Card.style.opacity = "0.2";
+    player2Card.style.opacity = "0.2";
+  };
+
+  const gameFinishedStyling = function () {
+    player1Card.style.opacity = "1";
+    player2Card.style.opacity = "1";
   };
 })();
 

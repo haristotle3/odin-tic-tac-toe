@@ -5,6 +5,10 @@ const GameBoard = (function () {
 
   const grid = [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY];
 
+  const initGrid = () => {
+    for (let i = 0; i < grid.length; i++) grid[i] = EMPTY;
+  };
+
   const markCell = function (index, player) {
     if (grid[index] === EMPTY) {
       grid[index] = player.token === "X" ? X : O;
@@ -17,7 +21,7 @@ const GameBoard = (function () {
   const oValue = () => O;
   const emptyValue = () => EMPTY;
 
-  return { getBoard, markCell, xValue, oValue, emptyValue };
+  return { getBoard, initGrid, markCell, xValue, oValue, emptyValue };
 })();
 
 const Player = function (tokenCharacter = "*", name = "Player") {
@@ -36,6 +40,13 @@ const GameController = (function () {
   let turnNumber = 0;
   let activePlayer = player1;
   let result = -1;
+
+  const initGame = () => {
+    turnNumber = 0;
+    activePlayer = player1;
+    result = -1;
+    GameBoard.initGrid();
+  };
 
   const playRound = (index) => {
     if (GameBoard.markCell(index, activePlayer)) {
@@ -112,7 +123,7 @@ const GameController = (function () {
 
   const getPlayer = (number) => (number === 1 ? player1 : player2);
 
-  return { playRound, getPlayer, getActivePlayerToken, getResult };
+  return { initGame, playRound, getPlayer, getActivePlayerToken, getResult };
 })();
 
 const displayController = (function () {
@@ -173,73 +184,75 @@ const displayController = (function () {
 
   startBtn.addEventListener("click", () => {
     if (GameController.getResult() != -1) return;
-
-    const gameEnabledStyling = function () {
-      const cellsContainer = document.querySelector("main .cells-container");
-      const styleSheet = document.styleSheets[0];
-      styleSheet.insertRule(
-        `
-        main .cells-container button:hover {
-          background-color: rgb(228, 228, 228);
-        }`,
-        12
-      );
-      cellsContainer.style.backgroundColor = "rgba(0,0,0,1)";
-    };
-
-    const gameDisableStyling = function () {
-      const cellsContainer = document.querySelector("main .cells-container");
-      const styleSheet = document.styleSheets[0];
-      styleSheet.deleteRule(12);
-      cellsContainer.style.backgroundColor = "rgba(0,0,0,0.2)";
-    };
-
     gameEnabledStyling();
-
-    cellContainer.addEventListener("click", function handleGridClicks(e) {
-      if (e.target.id === "grid-gap") return; // there are gaps in the grid cell.
-      const cellNumber = e.target.id;
-      const cell = document.getElementById(cellNumber);
-      const token = GameController.getActivePlayerToken();
-
-      const rv = GameController.playRound(Number(cellNumber));
-      const resultHeading = document.querySelector(".results h1");
-      console.log(
-        GameController.getPlayer(1).name,
-        GameController.getPlayer(2).name
-      );
-
-      switch (rv) {
-        case -1:
-          return;
-        case 200:
-          cell.textContent = token;
-          break;
-        case 1:
-          cell.textContent = token;
-          // mistake here
-          resultHeading.textContent = `🎉 ${
-            GameController.getPlayer(1).name
-          } WINS! 🎉`;
-          cellContainer.removeEventListener("click", handleGridClicks);
-          gameDisableStyling();
-          break;
-        case 2:
-          cell.textContent = token;
-          // mistake here
-          resultHeading.textContent = `🎉 ${
-            GameController.getPlayer(2).name
-          } WINS! 🎉`;
-          cellContainer.removeEventListener("click", handleGridClicks);
-          gameDisableStyling();
-          break;
-        case 0:
-          cell.textContent = token;
-          resultHeading.textContent = "🏳️ TIE! 🏳️";
-          cellContainer.removeEventListener("click", handleGridClicks);
-          gameDisableStyling();
-          break;
-      }
-    });
+    cellContainer.addEventListener("click", handleGridClicks);
   });
+
+  restartBtn.addEventListener("click", () => {
+    GameController.initGame();
+    gameDisableStyling();
+    cellContainer.removeEventListener("click", handleGridClicks);
+    const gridCells = document.querySelectorAll(".cells-container button");
+    gridCells.forEach((button) => (button.textContent = ""));
+  });
+
+  const handleGridClicks = (e) => {
+    if (e.target.id === "grid-gap") return; // there are gaps in the grid cell.
+    const cellNumber = e.target.id;
+    const cell = document.getElementById(cellNumber);
+    const token = GameController.getActivePlayerToken();
+
+    const rv = GameController.playRound(Number(cellNumber));
+    const resultHeading = document.querySelector(".results h1");
+    console.log(
+      GameController.getPlayer(1).name,
+      GameController.getPlayer(2).name
+    );
+
+    switch (rv) {
+      case -1:
+        return;
+      case 200:
+        cell.textContent = token;
+        break;
+      case 1:
+        cell.textContent = token;
+        // mistake here
+        resultHeading.textContent = `🎉 ${
+          GameController.getPlayer(1).name
+        } WINS! 🎉`;
+        cellContainer.removeEventListener("click", handleGridClicks);
+        gameDisableStyling();
+        break;
+      case 2:
+        cell.textContent = token;
+        // mistake here
+        resultHeading.textContent = `🎉 ${
+          GameController.getPlayer(2).name
+        } WINS! 🎉`;
+        cellContainer.removeEventListener("click", handleGridClicks);
+        gameDisableStyling();
+        break;
+      case 0:
+        cell.textContent = token;
+        resultHeading.textContent = "🏳️ TIE! 🏳️";
+        cellContainer.removeEventListener("click", handleGridClicks);
+        gameDisableStyling();
+        break;
+    }
+  };
+
+  const gameEnabledStyling = function () {
+    const cellsContainer = document.querySelector("main .cells-container");
+    const gridCells = document.querySelectorAll("main .cells-container button");
+    gridCells.forEach((button) => button.classList.add(".enabled"));
+    cellsContainer.style.backgroundColor = "rgba(0,0,0,1)";
+  };
+
+  const gameDisableStyling = function () {
+    const cellsContainer = document.querySelector("main .cells-container");
+    const gridCells = document.querySelectorAll("main .cells-container button");
+    gridCells.forEach((button) => button.classList.remove(".enabled"));
+    cellsContainer.style.backgroundColor = "rgba(0,0,0,0.2)";
+  };
 })();

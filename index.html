@@ -17,10 +17,10 @@
         <h1></h1>
       </div>
       <div class="game-container">
-        <div class="player-card">
-          <h4>Player 1</h4>
+        <div class="player-card player-1">
+          <h4></h4>
           <img src="player-1.png" alt="image-player-1" />
-          <button>Change Name</button>
+          <button id="player-1">Change Name</button>
         </div>
 
         <div class="cells-container">
@@ -35,11 +35,21 @@
           <button id="8"></button>
         </div>
 
-        <div class="player-card">
-          <h4>Player 2</h4>
+        <div class="player-card player-2">
+          <h4></h4>
           <img src="player-2.png" alt="image-player-2" />
-          <button>Change Name</button>
+          <button id="player-2">Change Name</button>
         </div>
+
+        <dialog>
+          <form method="dialog">
+            <label for="newName"
+              >New Name:<input id="newName" type="text"
+            /></label>
+            <input id="playerNumber" type="number" hidden />
+            <button type="submit">Submit</button>
+          </form>
+        </dialog>
       </div>
 
       <div class="start-restart-btns">

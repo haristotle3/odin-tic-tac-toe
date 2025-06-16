@@ -21,7 +21,10 @@ const GameBoard = (function () {
 })();
 
 const Player = function (tokenCharacter = "*", name = "Player") {
-  return { name, token: tokenCharacter };
+  const rename = function (newName) {
+    this.name = newName;
+  };
+  return { name, token: tokenCharacter, rename };
 };
 
 const GameController = (function () {
@@ -99,6 +102,59 @@ const GameController = (function () {
     activePlayer = activePlayer.token === player1.token ? player2 : player1;
   };
 
-  return { playRound };
+  const getPlayer = (number) => (number === 1 ? player1 : player2);
+
+  return { playRound, getPlayer };
 })();
 
+const displayController = (function () {
+  const cellContainer = document.querySelector(".cells-container");
+
+  const startBtn = document.querySelector("#start");
+  const restartBtn = document.querySelector("#restart");
+
+  const playerOneChangeNameButton = document.querySelector(
+    ".player-card.player-1 button"
+  );
+  const playerTwoChangeNameButton = document.querySelector(
+    ".player-card.player-2 button"
+  );
+
+  const dialog = document.querySelector("dialog");
+  const dialogFormSubmit = document.querySelector("dialog form button");
+
+  const playerOneHeading = document.querySelector(".player-card.player-1 h4");
+  const playerTwoHeading = document.querySelector(".player-card.player-2 h4");
+
+  playerOneHeading.textContent = GameController.getPlayer(1).name;
+  playerTwoHeading.textContent = GameController.getPlayer(2).name;
+
+  playerOneChangeNameButton.addEventListener("click", () => {
+    const hiddenInput = document.querySelector("dialog form > input");
+    hiddenInput.value = 1;
+    dialog.showModal();
+  });
+
+  playerTwoChangeNameButton.addEventListener("click", () => {
+    const hiddenInput = document.querySelector("dialog form > input");
+    hiddenInput.value = 2;
+    dialog.showModal();
+  });
+
+  dialogFormSubmit.addEventListener("click", () => {
+    const newName = document.querySelector("dialog form label input").value;
+    const playerNumber = document.querySelector("dialog form > input").value;
+    console.log(playerNumber);
+    GameController.getPlayer(playerNumber).rename(newName);
+
+    if (playerNumber === "1")
+      playerOneHeading.textContent =
+        GameController.getPlayer(playerNumber).name;
+    else
+      playerTwoHeading.textContent =
+        GameController.getPlayer(playerNumber).name;
+
+    dialog.close();
+  });
+  
+})();

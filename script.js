@@ -43,19 +43,18 @@ const GameController = (function () {
       }
       if (playerWins(player2)) {
         console.log(`Player 2 wins!`);
-        return 1;
+        return 2;
       }
       if (isTie()) {
         console.log(`Tie`);
-        return 1;
+        return 0;
       }
 
       switchPlayer();
       incTurn();
-      return 0;
-    } else {
-      return 0;
+      return -1;
     }
+    return -1;
   };
 
   const incTurn = () => turnNumber++;
@@ -156,5 +155,4 @@ const displayController = (function () {
 
     dialog.close();
   });
-  
 })();

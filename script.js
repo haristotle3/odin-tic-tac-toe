@@ -52,13 +52,14 @@ const GameController = (function () {
 
       switchPlayer();
       incTurn();
-      return -1;
+      return 200;
     }
     return -1;
   };
 
   const incTurn = () => turnNumber++;
   const getTurn = () => turnNumber;
+  const getActivePlayerToken = () => activePlayer.token;
 
   const playerWins = (player) => {
     const marker =
@@ -103,7 +104,7 @@ const GameController = (function () {
 
   const getPlayer = (number) => (number === 1 ? player1 : player2);
 
-  return { playRound, getPlayer };
+  return { playRound, getPlayer, getActivePlayerToken };
 })();
 
 const displayController = (function () {
@@ -154,5 +155,12 @@ const displayController = (function () {
         GameController.getPlayer(playerNumber).name;
 
     dialog.close();
+  });
+
+  cellContainer.addEventListener("click", (e) => {
+    const cellNumber = e.target.id;
+    const cell = document.getElementById(cellNumber);
+    if (GameController.playRound(Number(cellNumber)) == -1) return;
+    cell.textContent = GameController.getActivePlayerToken();
   });
 })();

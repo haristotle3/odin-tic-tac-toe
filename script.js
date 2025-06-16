@@ -247,7 +247,7 @@ const displayController = (function () {
         cell.textContent = token;
         resultHeading.textContent = "🏳️ TIE! 🏳️";
         cellContainer.removeEventListener("click", handleGridClicks);
-        gameFinishedStyling();
+        gameFinishedStyling(0);
         break;
     }
   };
@@ -289,9 +289,12 @@ const displayController = (function () {
     if (winningPlayer === 1) {
       player1Card.style.border = "4px solid green";
       player2Card.style.border = "0";
-    } else {
+    } else if (winningPlayer === 2) {
       player2Card.style.border = "4px solid green";
       player1Card.style.border = "0";
+    } else if (winningPlayer === 0) {
+      player2Card.style.border = "2px solid black";
+      player1Card.style.border = "2px solid black";
     }
   };
 })();

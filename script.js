@@ -34,19 +34,23 @@ const GameController = (function () {
 
   let turnNumber = 0;
   let activePlayer = player1;
+  let result = -1;
 
   const playRound = (index) => {
     if (GameBoard.markCell(index, activePlayer)) {
       if (playerWins(player1)) {
         console.log(`Player 1 wins!`);
+        setResult(1);
         return 1;
       }
       if (playerWins(player2)) {
         console.log(`Player 2 wins!`);
+        setResult(2);
         return 2;
       }
       if (isTie()) {
         console.log(`Tie`);
+        setResult(0);
         return 0;
       }
 
@@ -60,6 +64,10 @@ const GameController = (function () {
   const incTurn = () => turnNumber++;
   const getTurn = () => turnNumber;
   const getActivePlayerToken = () => activePlayer.token;
+  const setResult = (res) => {
+    result = res;
+  };
+  const getResult = () => result;
 
   const playerWins = (player) => {
     const marker =
@@ -104,7 +112,7 @@ const GameController = (function () {
 
   const getPlayer = (number) => (number === 1 ? player1 : player2);
 
-  return { playRound, getPlayer, getActivePlayerToken };
+  return { playRound, getPlayer, getActivePlayerToken, getResult };
 })();
 
 const displayController = (function () {
@@ -144,7 +152,6 @@ const displayController = (function () {
   dialogFormSubmit.addEventListener("click", () => {
     const newName = document.querySelector("dialog form label input").value;
     const playerNumber = document.querySelector("dialog form > input").value;
-    console.log(playerNumber);
     GameController.getPlayer(playerNumber).rename(newName);
 
     if (playerNumber === "1")
@@ -157,35 +164,70 @@ const displayController = (function () {
     dialog.close();
   });
 
-  cellContainer.addEventListener("click", function handleGridClicks(e) {
-    const cellNumber = e.target.id;
-    const cell = document.getElementById(cellNumber);
-    const token = GameController.getActivePlayerToken();
+  startBtn.addEventListener("click", () => {
+    if (GameController.getResult() != -1) return;
 
-    const rv = GameController.playRound(Number(cellNumber));
-    const resultHeading = document.querySelector(".results h1");
+    const gameEnabledStyling = function () {
+      const cellsContainer = document.querySelector("main .cells-container");
+      const styleSheet = document.styleSheets[0];
+      styleSheet.insertRule(
+        `
+        main .cells-container button:hover {
+          background-color: rgb(228, 228, 228);
+        }`,
+        12
+      );
+      cellsContainer.style.backgroundColor = "rgba(0,0,0,1)";
+    };
 
-    switch (rv) {
-      case -1:
-        return;
-      case 200:
-        cell.textContent = token;
-        break;
-      case 1:
-        cell.textContent = token;
-        resultHeading.textContent = "🎉 PLAYER 1 WINS! 🎉";
-        cellContainer.removeEventListener("click", handleGridClicks);
-        break;
-      case 2:
-        cell.textContent = token;
-        resultHeading.textContent = "🎉 PLAYER 2 WINS! 🎉";
-        cellContainer.removeEventListener("click", handleGridClicks);
-        break;
-      case 0:
-        cell.textContent = token;
-        resultHeading.textContent = "🏳️ TIE! 🏳️";
-        cellContainer.removeEventListener("click");
-        break;
-    }
+    const gameDisableStyling = function () {
+      const cellsContainer = document.querySelector("main .cells-container");
+      const styleSheet = document.styleSheets[0];
+      styleSheet.deleteRule(12);
+      cellsContainer.style.backgroundColor = "rgba(0,0,0,0.2)";
+    };
+
+    gameEnabledStyling();
+
+    cellContainer.addEventListener("click", function handleGridClicks(e) {
+      const cellNumber = e.target.id;
+      const cell = document.getElementById(cellNumber);
+      const token = GameController.getActivePlayerToken();
+
+      const rv = GameController.playRound(Number(cellNumber));
+      const resultHeading = document.querySelector(".results h1");
+
+      switch (rv) {
+        case -1:
+          return;
+        case 200:
+          cell.textContent = token;
+          break;
+        case 1:
+          cell.textContent = token;
+
+          resultHeading.textContent = `🎉 ${
+            GameController.getPlayer(1).name
+          } WINS! 🎉`;
+          cellContainer.removeEventListener("click", handleGridClicks);
+          gameDisableStyling();
+          break;
+        case 2:
+          cell.textContent = token;
+
+          resultHeading.textContent = `🎉 ${
+            GameController.getPlayer(1).name
+          } WINS! 🎉`;
+          cellContainer.removeEventListener("click", handleGridClicks);
+          gameDisableStyling();
+          break;
+        case 0:
+          cell.textContent = token;
+          resultHeading.textContent = "🏳️ TIE! 🏳️";
+          cellContainer.removeEventListener("click");
+          gameDisableStyling();
+          break;
+      }
+    });
   });
 })();

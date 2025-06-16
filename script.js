@@ -227,21 +227,21 @@ const displayController = (function () {
         break;
       case 1:
         cell.textContent = token;
-  
+
         resultHeading.textContent = `🎉 ${
           GameController.getPlayer(1).name
         } WINS! 🎉`;
         cellContainer.removeEventListener("click", handleGridClicks);
-        gameFinishedStyling();
+        gameFinishedStyling(1);
         break;
       case 2:
         cell.textContent = token;
-        
+
         resultHeading.textContent = `🎉 ${
           GameController.getPlayer(2).name
         } WINS! 🎉`;
         cellContainer.removeEventListener("click", handleGridClicks);
-        gameFinishedStyling();
+        gameFinishedStyling(2);
         break;
       case 0:
         cell.textContent = token;
@@ -266,6 +266,9 @@ const displayController = (function () {
   const gameEnabledStyling = function () {
     const cellsContainer = document.querySelector("main .cells-container");
     cellsContainer.style.backgroundColor = "rgba(0,0,0,1)";
+
+    player1Card.style.border = "2px solid black";
+    player2Card.style.border = "2px solid black";
   };
 
   const gameDisableStyling = function () {
@@ -274,11 +277,22 @@ const displayController = (function () {
 
     player1Card.style.opacity = "0.2";
     player2Card.style.opacity = "0.2";
+
+    player1Card.style.border = "2px solid black";
+    player2Card.style.border = "2px solid black";
   };
 
-  const gameFinishedStyling = function () {
+  const gameFinishedStyling = function (winningPlayer) {
     player1Card.style.opacity = "1";
     player2Card.style.opacity = "1";
+
+    if (winningPlayer === 1) {
+      player1Card.style.border = "4px solid green";
+      player2Card.style.border = "0";
+    } else {
+      player2Card.style.border = "4px solid green";
+      player1Card.style.border = "0";
+    }
   };
 })();
 

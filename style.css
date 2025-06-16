@@ -69,6 +69,7 @@ main .player-card button {
 
 main .player-card button:hover {
   background-color: rgba(51, 132, 212, 1);
+  opacity: 1;
 }
 
 main .cells-container {

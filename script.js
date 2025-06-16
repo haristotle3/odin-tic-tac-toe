@@ -191,6 +191,9 @@ const displayController = (function () {
   restartBtn.addEventListener("click", () => {
     GameController.initGame();
     gameDisableStyling();
+    const resultHeading = document.querySelector(".results h1");
+    resultHeading.textContent = "";
+
     cellContainer.removeEventListener("click", handleGridClicks);
     const gridCells = document.querySelectorAll(".cells-container button");
     gridCells.forEach((button) => (button.textContent = ""));
@@ -204,10 +207,6 @@ const displayController = (function () {
 
     const rv = GameController.playRound(Number(cellNumber));
     const resultHeading = document.querySelector(".results h1");
-    console.log(
-      GameController.getPlayer(1).name,
-      GameController.getPlayer(2).name
-    );
 
     switch (rv) {
       case -1:
@@ -244,15 +243,13 @@ const displayController = (function () {
 
   const gameEnabledStyling = function () {
     const cellsContainer = document.querySelector("main .cells-container");
-    const gridCells = document.querySelectorAll("main .cells-container button");
-    gridCells.forEach((button) => button.classList.add(".enabled"));
     cellsContainer.style.backgroundColor = "rgba(0,0,0,1)";
   };
 
   const gameDisableStyling = function () {
     const cellsContainer = document.querySelector("main .cells-container");
-    const gridCells = document.querySelectorAll("main .cells-container button");
-    gridCells.forEach((button) => button.classList.remove(".enabled"));
-    cellsContainer.style.backgroundColor = "rgba(0,0,0,0.2)";
+    cellsContainer.style.backgroundColor = "rgba(0,0,0,0.1)";
   };
 })();
+
+document.querySelector("#start").classList.add(".hovered");

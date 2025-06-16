@@ -88,11 +88,9 @@ main .cells-container button {
   font-size: 120px;
 }
 
-/* main .cells-container button:hover {
+main .cells-container button:hover {
   background-color: rgb(228, 228, 228);
-}  */
-
-
+}
 
 .start-restart-btns {
   text-align: center;

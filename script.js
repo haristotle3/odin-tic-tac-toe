@@ -298,5 +298,3 @@ const displayController = (function () {
     }
   };
 })();
-
-document.querySelector("#start").classList.add(".hovered");
